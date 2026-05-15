@@ -86,6 +86,8 @@ def apply_theme():
         /* Hide header/footer but keep sidebar */
         #MainMenu, footer, header {{visibility: hidden;}}
 
+        [data-testid="stSidebarNav"] {{ display: none !important; }}
+
         [data-testid="stSidebar"] {{
             background: {t["sidebar"]} !important;
             border-right: 1px solid {t["border"]} !important;

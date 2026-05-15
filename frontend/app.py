@@ -44,7 +44,7 @@ with nav_c2:
         </div>
     """, unsafe_allow_html=True)
 with nav_c3:
-    if st.button("Login Button", use_container_width=True):
+    if st.button("Login", key="top_login", use_container_width=True):
         st.switch_page("pages/login.py")
 
 st.markdown("<br><br><br>", unsafe_allow_html=True)

@@ -1,0 +1,1 @@
+mysql://root:gsKgNBJNSdhlGFLdgmCkHXTDXqvbwiSj@mysql.railway.internal:3306/railway
