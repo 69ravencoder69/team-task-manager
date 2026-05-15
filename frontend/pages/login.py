@@ -20,23 +20,22 @@ if is_logged_in():
 
 render_topbar(show_refresh=False)
 
-st.markdown('<div class="ttm-auth-wrap">', unsafe_allow_html=True)
-st.markdown('<div class="ttm-auth-card">', unsafe_allow_html=True)
-st.markdown('<p class="ttm-auth-title">Login Page</p>', unsafe_allow_html=True)
+st.markdown('<h1 style="text-align:center; font-weight:800; font-size:2rem; margin-bottom:0.5rem; text-transform:uppercase;">TEAM TASK MANAGER</h1>', unsafe_allow_html=True)
+st.markdown('<p style="text-align:center; font-size:1.2rem; margin-bottom:1rem; color:var(--text-color);">Login Page</p>', unsafe_allow_html=True)
 
-with st.form("login_form"):
-    st.markdown("**Enter Email**")
-    email = st.text_input("email", label_visibility="collapsed")
-    st.markdown("**Enter Password**")
-    password = st.text_input("password", type="password", label_visibility="collapsed")
-    
-    st.markdown(
-        '<p style="text-align:center; font-size: 0.9rem; margin: 1rem 0;">New User? <a href="register" target="_self" style="color: inherit; text-decoration: underline;">Register</a></p>',
-        unsafe_allow_html=True,
-    )
-    submitted = st.form_submit_button("Login", use_container_width=True)
-
-st.markdown("</div></div>", unsafe_allow_html=True)
+c1, c2, c3 = st.columns([1, 1.2, 1])
+with c2:
+    with st.form("login_form"):
+        st.markdown("**Enter Email**")
+        email = st.text_input("email", label_visibility="collapsed")
+        st.markdown("**Enter Password**")
+        password = st.text_input("password", type="password", label_visibility="collapsed")
+        
+        st.markdown(
+            '<p style="text-align:center; font-size: 0.9rem; margin: 1rem 0;">New User? <a href="register" target="_self" style="color: inherit; text-decoration: underline;">Register</a></p>',
+            unsafe_allow_html=True,
+        )
+        submitted = st.form_submit_button("Login", use_container_width=True)
 
 if submitted:
     if not email or not password:
