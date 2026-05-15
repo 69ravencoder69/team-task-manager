@@ -147,19 +147,12 @@ def apply_theme():
             background: {t["border"]} !important; /* Active state like DASHBOARD in image */
             color: {t["heading"]} !important;
         }}
-        /* Sparkle bottom right */
-        .stApp::after {{
-            content: "✦";
-            position: fixed;
-            bottom: 20px;
-            right: 30px;
-            font-size: 3rem;
-            color: {t["heading"]};
-            opacity: 0.15;
-            z-index: 9999;
-            pointer-events: none;
+        /* Fix top padding gap */
+        [data-testid="stMainBlockContainer"] {{
+            padding-top: 2rem !important;
+            padding-bottom: 2rem !important;
         }}
-
+        
         [data-testid="stMetricValue"] {{
             color: {t["heading"]} !important;
             font-size: 2.25rem !important;
