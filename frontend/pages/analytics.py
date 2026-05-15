@@ -19,6 +19,10 @@ init_page()
 selected = render_sidebar("Analytics")
 navigate_if_needed("Analytics", selected)
 
+if not is_admin():
+    st.warning("Access denied. Only administrators can view analytics.")
+    st.stop()
+
 render_page_header("ANALYTICS", "Team productivity insights")
 
 try:

@@ -17,12 +17,14 @@ def render_sidebar(current_page: str = "Dashboard") -> str:
 
         selected = current_page
         for page_key, label, icon in NAV_ITEMS:
+            if page_key == "Analytics" and not is_admin():
+                continue
             btn_type = "primary" if page_key == current_page else "secondary"
             if st.button(f"{icon}  {label}", key=f"nav_{page_key}", use_container_width=True, type=btn_type):
                 selected = page_key
 
         st.markdown('<p class="ttm-nav-label">Navigation</p>', unsafe_allow_html=True)
-        role = "Admin" if is_admin() else "Project Manager"
+        role = "Admin" if is_admin() else "Member"
         st.markdown(
             f'<div class="ttm-user-block">'
             f'<div><span>Name:</span> {get_user_name()}</div>'

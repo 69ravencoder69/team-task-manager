@@ -85,6 +85,8 @@ if st.session_state.get("task_view") == "filter" and sf != "All":
 
 try:
     tasks = api_service.get_tasks(project_id=project_id, status=filter_status, search=search or None)
+    if not is_admin():
+        tasks = [t for t in tasks if t.get("assigned_to") == st.session_state.user.get("id")]
 except APIError as e:
     st.error(e.message)
     st.stop()
