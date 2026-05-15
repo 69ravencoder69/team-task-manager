@@ -33,15 +33,15 @@ c1.metric("Completion Rate", f"{round(stats.get('done_tasks', 0) / max(stats.get
 c2.metric("In Progress", stats.get("in_progress_tasks", 0))
 c3.metric("Overdue", stats.get("overdue_count", 0))
 
-st.markdown("---")
+st.markdown("<br>", unsafe_allow_html=True)
 col1, col2 = st.columns(2)
 with col1:
-    st.markdown("**Tasks by Status**")
+    st.markdown("### Tasks by Status")
     fig = status_pie(analytics.get("tasks_by_status", {}))
     if fig:
         st.plotly_chart(fig, use_container_width=True)
 with col2:
-    st.markdown("**Tasks by Priority**")
+    st.markdown("### Tasks by Priority")
     fig = priority_bar(analytics.get("tasks_by_priority", {}))
     if fig:
         st.plotly_chart(fig, use_container_width=True)

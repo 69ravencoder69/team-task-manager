@@ -55,18 +55,16 @@ for project in projects:
     status_label = project["status"].title() if isinstance(project["status"], str) else str(project["status"])
     st.markdown(
         f"""
-        <div class="ttm-card">
-            <div style="display:flex;justify-content:space-between;align-items:flex-start;">
-                <div>
-                    <h3 style="color:{t['heading']};margin:0;">📁 {project['name']}</h3>
-                    <p style="color:{t['muted']};margin:0.35rem 0 0 0;">{project.get('description') or 'No description'}</p>
-                </div>
+        <div class="ttm-project-row">
+            <div style="font-size:2rem;color:{t['heading']};margin-right:1rem;">📁</div>
+            <div>
+                <h3 style="color:{t['heading']};margin:0;font-size:1.1rem;font-weight:600;">{project['name']}</h3>
+                <p style="color:{t['muted']};margin:0.2rem 0 0 0;font-size:0.85rem;">{project.get('description') or 'No description'}</p>
             </div>
-            <div style="display:flex;gap:2rem;margin-top:1rem;color:{t['text']};">
-                <div><span style="color:{t['muted']};font-size:0.75rem;">Status</span><br><b>{status_label}</b></div>
-                <div><span style="color:{t['muted']};font-size:0.75rem;">Members</span><br><b>{project.get('member_count', 0)}</b></div>
-                <div><span style="color:{t['muted']};font-size:0.75rem;">Tasks</span><br><b>{project.get('task_count', 0)}</b></div>
-            </div>
+            <div><span style="color:{t['muted']};font-size:0.75rem;">Status</span><br><span class="ttm-badge" style="background:#333;color:#ccc;margin-top:0.2rem;">{status_label}</span></div>
+            <div><span style="color:{t['muted']};font-size:0.75rem;">Members</span><br><b style="font-size:1.1rem;color:{t['heading']};">{project.get('member_count', 0)}</b></div>
+            <div><span style="color:{t['muted']};font-size:0.75rem;">Tasks</span><br><b style="font-size:1.1rem;color:{t['heading']};">{project.get('task_count', 0)}</b></div>
+            <div><button style="background:transparent;border:1px solid {t['border']};border-radius:4px;color:{t['text']};padding:0.25rem 0.75rem;cursor:pointer;">Manage ˅</button></div>
         </div>
         """,
         unsafe_allow_html=True,
