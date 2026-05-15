@@ -2,38 +2,50 @@ import streamlit as st
 
 THEMES = {
     "dark": {
-        "bg": "linear-gradient(180deg, #0f0f1a 0%, #1a1a2e 100%)",
-        "sidebar": "#16162a",
-        "sidebar_border": "#2a2a4a",
-        "card": "linear-gradient(135deg, #1e1e2e 0%, #2a2a3e 100%)",
-        "card_hover": "linear-gradient(135deg, #252540 0%, #353550 100%)",
-        "input_bg": "#1e1e2e",
-        "text": "#e0e0e0",
+        "bg": "#0a0a0a",
+        "sidebar": "#111111",
+        "sidebar_border": "#2a2a2a",
+        "card": "#1a1a1a",
+        "card_hover": "#222222",
+        "input_bg": "#1a1a1a",
+        "text": "#e5e5e5",
         "heading": "#ffffff",
-        "muted": "#aaa",
-        "accent": "#6C63FF",
-        "nav_selected": "#6C63FF",
-        "nav_hover": "rgba(108, 99, 255, 0.25)",
-        "metric": "#6C63FF",
-        "shadow": "rgba(0,0,0,0.35)",
-        "shadow_hover": "rgba(108, 99, 255, 0.35)",
+        "muted": "#9ca3af",
+        "border": "#333333",
+        "btn_bg": "#2a2a2a",
+        "btn_text": "#ffffff",
+        "btn_primary_bg": "#f5f5f5",
+        "btn_primary_text": "#0a0a0a",
+        "nav_active": "#2d2d2d",
+        "badge_todo_bg": "#1e3a5f",
+        "badge_todo_text": "#93c5fd",
+        "badge_progress_bg": "#422006",
+        "badge_progress_text": "#fcd34d",
+        "badge_done_bg": "#14532d",
+        "badge_done_text": "#86efac",
     },
     "light": {
-        "bg": "linear-gradient(180deg, #f5f7fb 0%, #e8ecf4 100%)",
-        "sidebar": "#ffffff",
-        "sidebar_border": "#dde3ef",
-        "card": "linear-gradient(135deg, #ffffff 0%, #f8f9fc 100%)",
-        "card_hover": "linear-gradient(135deg, #ffffff 0%, #eef1f8 100%)",
+        "bg": "#d4d4d4",
+        "sidebar": "#c8c8c8",
+        "sidebar_border": "#1a1a1a",
+        "card": "#e8e8e8",
+        "card_hover": "#f0f0f0",
         "input_bg": "#ffffff",
-        "text": "#2d3748",
-        "heading": "#1a202c",
-        "muted": "#718096",
-        "accent": "#6C63FF",
-        "nav_selected": "#6C63FF",
-        "nav_hover": "rgba(108, 99, 255, 0.12)",
-        "metric": "#6C63FF",
-        "shadow": "rgba(0,0,0,0.08)",
-        "shadow_hover": "rgba(108, 99, 255, 0.2)",
+        "text": "#1a1a1a",
+        "heading": "#000000",
+        "muted": "#4b5563",
+        "border": "#1a1a1a",
+        "btn_bg": "#d1d1d1",
+        "btn_text": "#000000",
+        "btn_primary_bg": "#ffffff",
+        "btn_primary_text": "#000000",
+        "nav_active": "#b8b8b8",
+        "badge_todo_bg": "#dbeafe",
+        "badge_todo_text": "#1e40af",
+        "badge_progress_bg": "#fef3c7",
+        "badge_progress_text": "#92400e",
+        "badge_done_bg": "#dcfce7",
+        "badge_done_text": "#166534",
     },
 }
 
@@ -46,163 +58,249 @@ def set_theme(theme: str):
     st.session_state.theme = theme if theme in THEMES else "dark"
 
 
-def toggle_theme():
-    set_theme("light" if get_theme() == "dark" else "dark")
+def get_colors():
+    return THEMES[get_theme()]
 
 
 def apply_theme():
     t = THEMES[get_theme()]
     css = f"""
     <style>
-        .stApp {{
-            background: {t["bg"]};
-            color: {t["text"]};
-            transition: background 0.35s ease, color 0.35s ease;
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+        html, body, [class*="css"] {{
+            font-family: 'Inter', sans-serif !important;
         }}
+
+        .stApp {{
+            background: {t["bg"]} !important;
+            color: {t["text"]} !important;
+        }}
+
+        #MainMenu, footer, header {{visibility: hidden;}}
+
         [data-testid="stSidebar"] {{
             background: {t["sidebar"]} !important;
-            border-right: 1px solid {t["sidebar_border"]};
-            box-shadow: 4px 0 24px {t["shadow"]};
+            border-right: 1px solid {t["border"]} !important;
         }}
-        [data-testid="stSidebar"] .stMarkdown h3,
-        [data-testid="stSidebar"] p,
-        [data-testid="stSidebar"] label {{
-            color: {t["heading"]} !important;
+        [data-testid="stSidebar"] > div:first-child {{
+            padding-top: 1.5rem;
         }}
+
         [data-testid="stMetricValue"] {{
-            color: {t["metric"]} !important;
-            font-size: 2rem !important;
-            transition: transform 0.2s ease;
-        }}
-        [data-testid="stMetric"]:hover [data-testid="stMetricValue"] {{
-            transform: scale(1.05);
+            color: {t["heading"]} !important;
+            font-size: 2.25rem !important;
+            font-weight: 700 !important;
         }}
         [data-testid="stMetricLabel"] {{
             color: {t["muted"]} !important;
+            font-size: 0.8rem !important;
+            text-transform: capitalize;
         }}
-        .stButton > button {{
-            border-radius: 8px !important;
-            transition: all 0.25s ease !important;
+        [data-testid="stMetric"] {{
+            background: {t["card"]};
+            border: 1px solid {t["border"]};
+            border-radius: 10px;
+            padding: 1rem 1.25rem;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }}
-        .stButton > button:hover {{
+        [data-testid="stMetric"]:hover {{
             transform: translateY(-2px);
-            box-shadow: 0 6px 16px {t["shadow_hover"]};
+            box-shadow: 0 8px 20px rgba(0,0,0,0.25);
         }}
-        .stButton > button[kind="primary"] {{
-            background: linear-gradient(90deg, {t["accent"]}, #8B5CF6) !important;
-            border: none !important;
-            color: white !important;
-        }}
+
         .stTextInput > div > div > input,
         .stTextArea > div > div > textarea,
-        .stSelectbox > div > div > div {{
+        .stSelectbox > div > div > div,
+        .stDateInput > div > div > input {{
             background: {t["input_bg"]} !important;
             color: {t["heading"]} !important;
-            border: 1px solid {t["sidebar_border"]} !important;
+            border: 1px solid {t["border"]} !important;
             border-radius: 8px !important;
-            transition: border-color 0.2s ease, box-shadow 0.2s ease;
-        }}
-        .stTextInput > div > div > input:focus,
-        .stTextArea > div > div > textarea:focus {{
-            border-color: {t["accent"]} !important;
-            box-shadow: 0 0 0 2px {t["nav_hover"]} !important;
-        }}
-        h1, h2, h3, h4 {{
-            color: {t["heading"]} !important;
-        }}
-        p, .stCaption, [data-testid="stMarkdownContainer"] p {{
-            color: {t["text"]};
         }}
 
-        /* Navigation pane */
-        .nav-pane-header {{
-            background: linear-gradient(135deg, {t["accent"]}22, {t["accent"]}08);
-            border: 1px solid {t["sidebar_border"]};
-            border-radius: 12px;
-            padding: 14px 16px;
-            margin-bottom: 16px;
-            transition: box-shadow 0.3s ease;
+        .stButton > button {{
+            border: 1px solid {t["border"]} !important;
+            border-radius: 10px !important;
+            background: {t["btn_bg"]} !important;
+            color: {t["btn_text"]} !important;
+            font-weight: 600 !important;
+            transition: all 0.2s ease !important;
         }}
-        .nav-pane-header:hover {{
-            box-shadow: 0 8px 24px {t["shadow_hover"]};
+        .stButton > button:hover {{
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         }}
-        .nav-pane-header h3 {{
+        .stButton > button[kind="primary"] {{
+            background: {t["btn_primary_bg"]} !important;
+            color: {t["btn_primary_text"]} !important;
+            border: 1px solid {t["border"]} !important;
+        }}
+
+        h1, h2, h3, h4 {{ color: {t["heading"]} !important; }}
+
+        /* Brand sidebar */
+        .ttm-brand {{
+            font-size: 1.35rem;
+            font-weight: 800;
+            letter-spacing: 0.04em;
+            line-height: 1.2;
+            color: {t["heading"]};
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+        }}
+        .ttm-nav-label {{
+            font-size: 0.65rem;
+            letter-spacing: 0.15em;
+            color: {t["muted"]};
+            margin: 1.5rem 0 0.75rem 0;
+            text-transform: uppercase;
+        }}
+        .ttm-user-block {{
+            font-size: 0.85rem;
+            color: {t["text"]};
+            line-height: 1.8;
+            margin-top: 1rem;
+        }}
+        .ttm-user-block span {{
+            color: {t["muted"]};
+        }}
+
+        /* Page header */
+        .ttm-page-title {{
+            font-size: 2.75rem;
+            font-weight: 800;
+            letter-spacing: 0.02em;
+            color: {t["heading"]};
             margin: 0;
-            color: {t["heading"]} !important;
-            font-size: 1.1rem;
+            text-transform: uppercase;
         }}
-        .nav-pane-header span {{
+        .ttm-page-sub {{
+            color: {t["muted"]};
+            font-size: 1rem;
+            margin: 0.25rem 0 1rem 0;
+        }}
+        .ttm-divider {{
+            border: none;
+            border-top: 1px solid {t["border"]};
+            margin: 1rem 0 1.5rem 0;
+        }}
+
+        /* Auth card */
+        .ttm-auth-wrap {{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 70vh;
+        }}
+        .ttm-auth-card {{
+            background: {t["card"]};
+            border: 1px solid {t["border"]};
+            border-radius: 12px;
+            padding: 2.5rem 2.75rem;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+        }}
+        .ttm-auth-title {{
+            text-align: center;
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: {t["heading"]};
+            margin-bottom: 1.5rem;
+        }}
+
+        /* Stat / project / task cards */
+        .ttm-card {{
+            background: {t["card"]};
+            border: 1px solid {t["border"]};
+            border-radius: 10px;
+            padding: 1rem 1.25rem;
+            margin-bottom: 0.75rem;
+            transition: all 0.2s ease;
+        }}
+        .ttm-card:hover {{
+            background: {t["card_hover"]};
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+        }}
+
+        .ttm-project-row {{
+            display: grid;
+            grid-template-columns: auto 2fr 1fr 1fr 1fr auto;
+            gap: 1rem;
+            align-items: center;
+            background: {t["card"]};
+            border: 1px solid {t["border"]};
+            border-radius: 10px;
+            padding: 1.25rem;
+            margin-bottom: 0.5rem;
+            transition: all 0.2s ease;
+        }}
+        .ttm-project-row:hover {{
+            background: {t["card_hover"]};
+            border-color: {t["muted"]};
+        }}
+
+        .ttm-task-row {{
+            display: grid;
+            grid-template-columns: 2fr 2fr 1fr;
+            gap: 1rem;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid {t["border"]};
+        }}
+        .ttm-task-row:hover {{
+            background: {t["card_hover"]};
+        }}
+
+        .ttm-badge {{
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }}
+        .ttm-badge-todo {{ background: {t["badge_todo_bg"]}; color: {t["badge_todo_text"]}; }}
+        .ttm-badge-progress {{ background: {t["badge_progress_bg"]}; color: {t["badge_progress_text"]}; }}
+        .ttm-badge-done {{ background: {t["badge_done_bg"]}; color: {t["badge_done_text"]}; }}
+
+        .ttm-stat-label {{
+            font-size: 0.8rem;
+            color: {t["muted"]};
+            margin-bottom: 0.25rem;
+        }}
+        .ttm-stat-value {{
+            font-size: 2rem;
+            font-weight: 700;
+            color: {t["heading"]};
+        }}
+
+        /* Top bar */
+        .ttm-topbar {{
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.5rem;
+        }}
+
+        /* Search pill */
+        .ttm-search-hint {{
             color: {t["muted"]};
             font-size: 0.85rem;
+            margin-bottom: 0.35rem;
         }}
 
-        /* Hover cards */
-        .hover-card {{
-            background: {t["card"]};
-            border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 12px;
-            border: 1px solid {t["sidebar_border"]};
-            box-shadow: 0 4px 12px {t["shadow"]};
-            transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
-            cursor: default;
-        }}
-        .hover-card:hover {{
-            transform: translateY(-4px);
-            box-shadow: 0 12px 28px {t["shadow_hover"]};
-            background: {t["card_hover"]};
+        /* Hide streamlit option menu default padding */
+        .streamlit-expanderHeader {{
+            font-weight: 600 !important;
+            color: {t["heading"]} !important;
         }}
 
-        /* Task cards */
-        .task-card-hover {{
+        div[data-testid="stExpander"] {{
             background: {t["card"]};
+            border: 1px solid {t["border"]};
             border-radius: 10px;
-            padding: 16px;
-            margin-bottom: 12px;
-            box-shadow: 0 4px 8px {t["shadow"]};
-            transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
-        }}
-        .task-card-hover:hover {{
-            transform: translateY(-3px) scale(1.01);
-            box-shadow: 0 10px 24px {t["shadow_hover"]};
-            background: {t["card_hover"]};
-        }}
-
-        /* Project cards */
-        .project-card {{
-            background: {t["card"]};
-            border: 1px solid {t["sidebar_border"]};
-            border-radius: 12px;
-            padding: 18px;
-            margin-bottom: 12px;
-            transition: all 0.25s ease;
-        }}
-        .project-card:hover {{
-            transform: translateX(4px);
-            border-color: {t["accent"]};
-            box-shadow: 0 8px 20px {t["shadow_hover"]};
-        }}
-
-        .login-card {{
-            background: {t["card"]};
-            padding: 2rem;
-            border-radius: 16px;
-            border: 1px solid {t["sidebar_border"]};
-            box-shadow: 0 8px 32px {t["shadow_hover"]};
-            transition: box-shadow 0.3s ease;
-        }}
-        .login-card:hover {{
-            box-shadow: 0 12px 40px {t["shadow_hover"]};
-        }}
-
-        /* Refresh button highlight */
-        div[data-testid="column"] .stButton > button.refresh-btn {{
-            border: 1px dashed {t["accent"]} !important;
-        }}
-
-        /* Expander hover */
-        .streamlit-expanderHeader:hover {{
-            color: {t["accent"]} !important;
         }}
     </style>
     """

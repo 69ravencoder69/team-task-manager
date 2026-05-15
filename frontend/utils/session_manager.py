@@ -37,3 +37,8 @@ def require_auth():
 def get_user_name() -> str:
     user = st.session_state.get("user") or {}
     return user.get("full_name", "User")
+
+
+def get_user_email() -> str:
+    user = st.session_state.get("user") or {}
+    return user.get("email", "user@email.com")

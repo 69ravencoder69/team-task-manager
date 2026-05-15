@@ -7,7 +7,7 @@ import streamlit as st
 
 from components.charts import assignee_bar, priority_bar, status_pie
 from components.layout import init_page, navigate_if_needed
-from components.navbar import render_navbar
+from components.page_header import render_page_header
 from components.sidebar import render_sidebar
 from services import api_service
 from services.api_service import APIError
@@ -19,7 +19,7 @@ init_page()
 selected = render_sidebar("Analytics")
 navigate_if_needed("Analytics", selected)
 
-render_navbar("Analytics", "Team productivity insights" if is_admin() else "Your task analytics")
+render_page_header("ANALYTICS", "Team productivity insights")
 
 try:
     analytics = api_service.get_dashboard_analytics()
@@ -28,33 +28,27 @@ except APIError as e:
     st.error(e.message)
     st.stop()
 
-st.markdown('<motion-div class="hover-card">', unsafe_allow_html=True)
 c1, c2, c3 = st.columns(3)
 c1.metric("Completion Rate", f"{round(stats.get('done_tasks', 0) / max(stats.get('total_tasks', 1), 1) * 100)}%")
 c2.metric("In Progress", stats.get("in_progress_tasks", 0))
 c3.metric("Overdue", stats.get("overdue_count", 0))
-st.markdown("</motion-div>", unsafe_allow_html=True)
 
-st.divider()
-
+st.markdown("---")
 col1, col2 = st.columns(2)
-
 with col1:
+    st.markdown("**Tasks by Status**")
     fig = status_pie(analytics.get("tasks_by_status", {}))
     if fig:
         st.plotly_chart(fig, use_container_width=True)
-    else:
-        st.info("No status data yet.")
-
 with col2:
+    st.markdown("**Tasks by Priority**")
     fig = priority_bar(analytics.get("tasks_by_priority", {}))
     if fig:
         st.plotly_chart(fig, use_container_width=True)
-    else:
-        st.info("No priority data yet.")
 
 if is_admin() and analytics.get("tasks_by_assignee"):
-    st.subheader("Tasks by Team Member")
+    st.markdown("### Tasks by Team Member")
+    st.caption("Tasks by Assignee")
     fig = assignee_bar(analytics["tasks_by_assignee"])
     if fig:
         st.plotly_chart(fig, use_container_width=True)
