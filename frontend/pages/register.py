@@ -35,6 +35,8 @@ with c2:
         password = st.text_input("pw", type="password", label_visibility="collapsed")
         st.markdown("**Confirm Password**")
         confirm = st.text_input("cpw", type="password", label_visibility="collapsed")
+        st.markdown("**Role**")
+        role = st.selectbox("role", ["member", "admin"], label_visibility="collapsed")
         
         st.markdown(
             '<p style="text-align:center; font-size: 0.9rem; margin: 1rem 0;">Already a Member? <a href="login" target="_self" style="color: inherit; text-decoration: underline;">Login</a></p>',
@@ -44,14 +46,14 @@ with c2:
 
 if submitted:
     if not all([full_name, email, password, confirm]):
-        st.error("All fields are required.")
+        st.error("Please fill in all fields.")
     elif password != confirm:
         st.error("Passwords do not match.")
     elif len(password) < 6:
         st.error("Password must be at least 6 characters.")
     else:
         try:
-            api_service.register(email, password, full_name)
+            api_service.register(email, password, full_name, role)
             result = api_service.login(email, password)
             set_auth(result["access_token"], result["user"])
             st.switch_page("pages/dashboard.py")

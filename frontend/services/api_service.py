@@ -52,8 +52,11 @@ def _request(method: str, path: str, **kwargs) -> Any:
     return response.json()
 
 
-def register(email: str, password: str, full_name: str) -> dict:
-    return _request("POST", "/auth/register", json={"email": email, "password": password, "full_name": full_name})
+def register(email: str, password: str, full_name: str, role: Optional[str] = None) -> dict:
+    payload = {"email": email, "password": password, "full_name": full_name}
+    if role:
+        payload["role"] = role
+    return _request("POST", "/auth/register", json=payload)
 
 
 def login(email: str, password: str) -> dict:

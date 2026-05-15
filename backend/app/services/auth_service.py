@@ -12,7 +12,10 @@ def register_user(db: Session, data: UserCreate) -> User:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Email already registered")
 
     user_count = db.query(User).count()
-    role = UserRole.admin if user_count == 0 else UserRole.member
+    if data.role:
+        role = data.role
+    else:
+        role = UserRole.admin if user_count == 0 else UserRole.member
 
     user = User(
         email=data.email,

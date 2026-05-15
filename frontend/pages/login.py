@@ -32,7 +32,7 @@ with c2:
         password = st.text_input("password", type="password", label_visibility="collapsed")
         
         st.markdown(
-            '<p style="text-align:center; font-size: 0.9rem; margin: 1rem 0;">New User? <a href="register" target="_self" style="color: inherit; text-decoration: underline;">Register</a></p>',
+            '<p style="text-align:center; font-size: 0.9rem; margin: 1rem 0;">New User? <a href="register" target="_self" style="color: inherit; text-decoration: underline;">Register</a> | <a href="#" style="color: inherit; text-decoration: underline;">Login as Admin</a></p>',
             unsafe_allow_html=True,
         )
         submitted = st.form_submit_button("Login", use_container_width=True)
