@@ -1,0 +1,16 @@
+# Monorepo Render config — frontend only
+# Backend stays on Railway. Database on Railway MySQL.
+
+services:
+  - type: web
+    name: team-task-manager-frontend
+    runtime: python
+    plan: free
+    rootDir: frontend
+    buildCommand: pip install -r requirements.txt
+    startCommand: streamlit run app.py --server.port=$PORT --server.address=0.0.0.0 --server.headless=true --browser.gatherUsageStats=false
+    envVars:
+      - key: API_BASE_URL
+        sync: false
+      - key: PYTHON_VERSION
+        value: "3.11.9"
