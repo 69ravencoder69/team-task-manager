@@ -11,51 +11,33 @@ from services.api_service import APIError
 from utils.session_manager import init_session, is_logged_in, set_auth
 from utils.theme import apply_theme
 
-st.set_page_config(
-    page_title="Register | Team Task Manager",
-    page_icon="⚡",
-    layout="wide",
-    initial_sidebar_state="collapsed",
-)
+st.set_page_config(page_title="Register | Team Task Manager", page_icon="⚡", layout="centered")
 init_session()
 apply_theme()
 
 if is_logged_in():
-    redirect_to = st.session_state.pop("post_login_redirect", "pages/dashboard.py")
-    st.switch_page(redirect_to)
+    st.switch_page("pages/dashboard.py")
 
 render_topbar(show_refresh=False)
 
-st.markdown("<br>", unsafe_allow_html=True)
+st.markdown('<h1 style="text-align:center; font-weight:800; font-size:2rem; margin-bottom:0.5rem; text-transform:uppercase;">TEAM TASK MANAGER</h1>', unsafe_allow_html=True)
+st.markdown('<p style="text-align:center; font-size:1.2rem; margin-bottom:1rem; color:var(--text-color);">Enter Your Details</p>', unsafe_allow_html=True)
 
-st.markdown(
-    '<h1 style="text-align:center; font-weight:800; font-size:2rem; '
-    'margin-bottom:0.25rem; text-transform:uppercase;">TEAM TASK MANAGER</h1>',
-    unsafe_allow_html=True,
-)
-st.markdown(
-    '<p style="text-align:center; font-size:1.1rem; margin-bottom:1.5rem; color:#888;">Enter Your Details</p>',
-    unsafe_allow_html=True,
-)
-
-# ── Centered form using columns ────────────────────────────────────────────────
-_, col, _ = st.columns([2.5, 2, 2.5])
-with col:
+c1, c2, c3 = st.columns([1, 1.2, 1])
+with c2:
     with st.form("register_form"):
         st.markdown("**Name**")
-        full_name = st.text_input("name", label_visibility="collapsed", placeholder="Full name")
+        full_name = st.text_input("name", label_visibility="collapsed")
         st.markdown("**Enter Email**")
-        email = st.text_input("email", label_visibility="collapsed", placeholder="you@example.com")
+        email = st.text_input("email", label_visibility="collapsed")
         st.markdown("**Enter Password**")
-        password = st.text_input("pw", type="password", label_visibility="collapsed", placeholder="••••••••")
+        password = st.text_input("pw", type="password", label_visibility="collapsed")
         st.markdown("**Confirm Password**")
-        confirm = st.text_input("cpw", type="password", label_visibility="collapsed", placeholder="••••••••")
+        confirm = st.text_input("cpw", type="password", label_visibility="collapsed")
         st.markdown("**Role**")
         role = st.selectbox("role", ["member", "admin"], label_visibility="collapsed")
-
         st.markdown(
-            '<p style="text-align:center; font-size:0.85rem; margin:0.75rem 0;">'
-            'Already a Member? <a href="login" target="_self" style="color:inherit; text-decoration:underline;">Login</a></p>',
+            '<p style="text-align:center; font-size: 0.9rem; margin: 1rem 0;">Already a Member? <a href="login" target="_self" style="color: inherit; text-decoration: underline;">Login</a></p>',
             unsafe_allow_html=True,
         )
         submitted = st.form_submit_button("Register", use_container_width=True)
@@ -72,7 +54,6 @@ if submitted:
             api_service.register(email, password, full_name, role)
             result = api_service.login(email, password)
             set_auth(result["access_token"], result["user"])
-            redirect_to = st.session_state.pop("post_login_redirect", "pages/dashboard.py")
-            st.switch_page(redirect_to)
+            st.switch_page("pages/dashboard.py")
         except APIError as e:
             st.error(e.message)
