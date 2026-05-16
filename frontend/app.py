@@ -21,55 +21,203 @@ apply_theme()
 if is_logged_in():
     st.switch_page("pages/dashboard.py")
 
-# Ensure sidebar is hidden for landing page
+# ── handle nav query-param redirects ──────────────────────────────────────────
+params = st.query_params
+nav_action = params.get("nav", None)
+
+if nav_action == "features":
+    # clear param then rerun so page loads fresh; JS scroll handled below
+    st.query_params.clear()
+elif nav_action in ("dashboard", "projects", "analytics"):
+    # Store intended destination in session and send to login
+    st.session_state["post_login_redirect"] = f"pages/{nav_action}.py"
+    st.query_params.clear()
+    st.switch_page("pages/login.py")
+
+# ── Hide sidebar ───────────────────────────────────────────────────────────────
 st.markdown("""
 <style>
 [data-testid="collapsedControl"] { display: none !important; }
-[data-testid="stSidebar"] { display: none !important; }
+[data-testid="stSidebar"]        { display: none !important; }
+
+/* ── Nav link buttons ──────────────────────────────────────────────────────── */
+.nav-link-btn button {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    color: #888 !important;
+    font-size: 0.85rem !important;
+    padding: 0.3rem 0.6rem !important;
+    min-height: 0 !important;
+    border-radius: 6px !important;
+    transition: color 0.2s ease, background 0.2s ease !important;
+}
+.nav-link-btn button:hover {
+    color: #fff !important;
+    background: rgba(255,255,255,0.07) !important;
+}
+.nav-link-btn button p { margin: 0 !important; font-size: 0.85rem !important; }
+
+/* ── Top-right Login button ─────────────────────────────────────────────────── */
+.nav-login-btn button {
+    background: transparent !important;
+    border: 1px solid #555 !important;
+    box-shadow: none !important;
+    color: #ccc !important;
+    font-size: 0.85rem !important;
+    padding: 0.3rem 1rem !important;
+    min-height: 0 !important;
+    border-radius: 6px !important;
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease !important;
+}
+.nav-login-btn button:hover {
+    background: #fff !important;
+    border-color: #fff !important;
+    color: #000 !important;
+}
+.nav-login-btn button p { margin: 0 !important; }
+
+/* ── Hero CTA buttons ───────────────────────────────────────────────────────── */
+.hero-btn-primary button {
+    background: #fff !important;
+    border: none !important;
+    color: #000 !important;
+    font-weight: 600 !important;
+    border-radius: 8px !important;
+    padding: 0.55rem 1.2rem !important;
+    font-size: 0.9rem !important;
+    transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease !important;
+    box-shadow: 0 2px 8px rgba(255,255,255,0.15) !important;
+}
+.hero-btn-primary button:hover {
+    background: #e0e0e0 !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 18px rgba(255,255,255,0.2) !important;
+}
+.hero-btn-secondary button {
+    background: transparent !important;
+    border: 1px solid #555 !important;
+    color: #ccc !important;
+    font-weight: 500 !important;
+    border-radius: 8px !important;
+    padding: 0.55rem 1.2rem !important;
+    font-size: 0.9rem !important;
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.15s ease !important;
+}
+.hero-btn-secondary button:hover {
+    background: rgba(255,255,255,0.08) !important;
+    border-color: #aaa !important;
+    color: #fff !important;
+    transform: translateY(-2px) !important;
+}
+.hero-btn-primary button p,
+.hero-btn-secondary button p { margin: 0 !important; }
 </style>
 """, unsafe_allow_html=True)
 
-# Top Nav
-nav_c1, nav_c2, nav_c3 = st.columns([2, 5, 1])
+# ── Top Nav ────────────────────────────────────────────────────────────────────
+nav_c1, n1, n2, n3, n4, n5, nav_c3 = st.columns([2.5, 0.9, 0.9, 1.1, 0.9, 1.1, 1])
+
 with nav_c1:
-    st.markdown('<div style="font-weight:800; font-size:1.2rem; letter-spacing:0.02em; padding-top:0.5rem; text-transform:uppercase;">TEAM TASK MANAGER</div>', unsafe_allow_html=True)
-with nav_c2:
-    st.markdown("""
-        <div style="display:flex; gap:1.5rem; justify-content:center; padding-top:0.75rem; font-size:0.85rem; color:#888;">
-            <span>Home</span>
-            <span>Features</span>
-            <span>Dashboard</span>
-            <span>Projects</span>
-            <span>Analytics</span>
-        </div>
-    """, unsafe_allow_html=True)
+    st.markdown(
+        '<div style="font-weight:800; font-size:1.2rem; letter-spacing:0.02em; '
+        'padding-top:0.5rem; text-transform:uppercase;">TEAM TASK MANAGER</div>',
+        unsafe_allow_html=True,
+    )
+
+with n1:
+    st.markdown('<div class="nav-link-btn">', unsafe_allow_html=True)
+    if st.button("Home", key="nav_home", use_container_width=True):
+        st.query_params.clear()
+        st.rerun()
+    st.markdown('</div>', unsafe_allow_html=True)
+
+with n2:
+    st.markdown('<div class="nav-link-btn">', unsafe_allow_html=True)
+    if st.button("Features", key="nav_features", use_container_width=True):
+        st.query_params["nav"] = "features"
+        st.rerun()
+    st.markdown('</div>', unsafe_allow_html=True)
+
+with n3:
+    st.markdown('<div class="nav-link-btn">', unsafe_allow_html=True)
+    if st.button("Dashboard", key="nav_dashboard", use_container_width=True):
+        st.session_state["post_login_redirect"] = "pages/dashboard.py"
+        st.switch_page("pages/login.py")
+    st.markdown('</div>', unsafe_allow_html=True)
+
+with n4:
+    st.markdown('<div class="nav-link-btn">', unsafe_allow_html=True)
+    if st.button("Projects", key="nav_projects", use_container_width=True):
+        st.session_state["post_login_redirect"] = "pages/projects.py"
+        st.switch_page("pages/login.py")
+    st.markdown('</div>', unsafe_allow_html=True)
+
+with n5:
+    st.markdown('<div class="nav-link-btn">', unsafe_allow_html=True)
+    if st.button("Analytics", key="nav_analytics", use_container_width=True):
+        st.session_state["post_login_redirect"] = "pages/analytics.py"
+        st.switch_page("pages/login.py")
+    st.markdown('</div>', unsafe_allow_html=True)
+
 with nav_c3:
+    st.markdown('<div class="nav-login-btn">', unsafe_allow_html=True)
     if st.button("Login", key="top_login", use_container_width=True):
         st.switch_page("pages/login.py")
+    st.markdown('</div>', unsafe_allow_html=True)
+
+# ── Features anchor (JS scroll when ?nav=features) ────────────────────────────
+st.markdown("""
+<script>
+const params = new URLSearchParams(window.location.search);
+if (params.get('nav') === 'features') {
+    setTimeout(() => {
+        const el = document.getElementById('features-section');
+        if (el) el.scrollIntoView({behavior: 'smooth'});
+    }, 600);
+}
+</script>
+""", unsafe_allow_html=True)
 
 st.markdown("<br><br><br>", unsafe_allow_html=True)
 
-# Hero Section
-st.markdown('<h1 style="font-size:3.5rem; font-weight:800; line-height:1.1; margin-bottom:1rem;">Manage Your Team<br>Tasks Efficiently</h1>', unsafe_allow_html=True)
-st.markdown('<p style="color:#888; font-size:1.1rem; line-height:1.6; margin-bottom:2rem;">Organize projects, track progress, manage tasks, and improve team productivity from one simple dashboard.</p>', unsafe_allow_html=True)
+# ── Hero Section ───────────────────────────────────────────────────────────────
+st.markdown(
+    '<h1 style="font-size:3.5rem; font-weight:800; line-height:1.1; margin-bottom:1rem;">'
+    'Manage Your Team<br>Tasks Efficiently</h1>',
+    unsafe_allow_html=True,
+)
+st.markdown(
+    '<p style="color:#888; font-size:1.1rem; line-height:1.6; margin-bottom:2rem;">'
+    'Organize projects, track progress, manage tasks, and improve team productivity '
+    'from one simple dashboard.</p>',
+    unsafe_allow_html=True,
+)
 
 bc1, bc2, bc3 = st.columns([1, 1, 6])
 with bc1:
-    if st.button("Get Started", type="primary", use_container_width=True):
+    st.markdown('<div class="hero-btn-primary">', unsafe_allow_html=True)
+    if st.button("Get Started", key="hero_getstarted", use_container_width=True):
         st.switch_page("pages/register.py")
+    st.markdown('</div>', unsafe_allow_html=True)
 with bc2:
-    if st.button("Login", use_container_width=True):
+    st.markdown('<div class="hero-btn-secondary">', unsafe_allow_html=True)
+    if st.button("Login", key="hero_login", use_container_width=True):
         st.switch_page("pages/login.py")
+    st.markdown('</div>', unsafe_allow_html=True)
 
 st.markdown("<br><br><br><br>", unsafe_allow_html=True)
 
-# Features Section
+# ── Features Section ───────────────────────────────────────────────────────────
+st.markdown('<div id="features-section"></div>', unsafe_allow_html=True)
 st.markdown('<h2 style="text-align:center; margin-bottom:3rem;">Features</h2>', unsafe_allow_html=True)
 f1, f2, f3 = st.columns(3)
 
 def feature_card(icon, title, desc):
     return f"""
-    <div style="background:transparent; border:1px solid #333; border-radius:12px; padding:1.5rem; height:100%; margin-bottom:1rem;">
+    <div style="background:transparent; border:1px solid #333; border-radius:12px;
+                padding:1.5rem; height:100%; margin-bottom:1rem;
+                transition:border-color 0.2s ease;">
         <div style="font-size:1.5rem; margin-bottom:1rem;">{icon}</div>
         <h3 style="font-size:1.1rem; margin-bottom:0.5rem; font-weight:600;">{title}</h3>
         <p style="color:#888; font-size:0.85rem; line-height:1.5; margin:0;">{desc}</p>
@@ -88,7 +236,7 @@ with f3:
 
 st.markdown("<br><br><br>", unsafe_allow_html=True)
 
-# Dashboard Preview Section / Statistics Section
+# ── Statistics Section ─────────────────────────────────────────────────────────
 st.markdown('<h2 style="text-align:center; margin-bottom:1rem;">Statistics Section</h2>', unsafe_allow_html=True)
 sc1, sc2, sc3, sc4 = st.columns(4)
 with sc1:

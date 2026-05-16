@@ -16,7 +16,9 @@ init_session()
 apply_theme()
 
 if is_logged_in():
-    st.switch_page("pages/dashboard.py")
+    # Honour any pending redirect (e.g. from nav bar)
+    redirect_to = st.session_state.pop("post_login_redirect", "pages/dashboard.py")
+    st.switch_page(redirect_to)
 
 render_topbar(show_refresh=False)
 
@@ -30,7 +32,7 @@ with c2:
         email = st.text_input("email", label_visibility="collapsed")
         st.markdown("**Enter Password**")
         password = st.text_input("password", type="password", label_visibility="collapsed")
-        
+
         st.markdown(
             '<p style="text-align:center; font-size: 0.9rem; margin: 1rem 0;">New User? <a href="register" target="_self" style="color: inherit; text-decoration: underline;">Register</a> | <a href="#" style="color: inherit; text-decoration: underline;">Login as Admin</a></p>',
             unsafe_allow_html=True,
@@ -44,7 +46,9 @@ if submitted:
         try:
             result = api_service.login(email, password)
             set_auth(result["access_token"], result["user"])
-            st.switch_page("pages/dashboard.py")
+            # Redirect to the page that was originally requested, or dashboard
+            redirect_to = st.session_state.pop("post_login_redirect", "pages/dashboard.py")
+            st.switch_page(redirect_to)
         except APIError as e:
             st.error(e.message)
 

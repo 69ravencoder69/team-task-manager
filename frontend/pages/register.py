@@ -16,7 +16,8 @@ init_session()
 apply_theme()
 
 if is_logged_in():
-    st.switch_page("pages/dashboard.py")
+    redirect_to = st.session_state.pop("post_login_redirect", "pages/dashboard.py")
+    st.switch_page(redirect_to)
 
 render_topbar(show_refresh=False)
 
@@ -37,7 +38,7 @@ with c2:
         confirm = st.text_input("cpw", type="password", label_visibility="collapsed")
         st.markdown("**Role**")
         role = st.selectbox("role", ["member", "admin"], label_visibility="collapsed")
-        
+
         st.markdown(
             '<p style="text-align:center; font-size: 0.9rem; margin: 1rem 0;">Already a Member? <a href="login" target="_self" style="color: inherit; text-decoration: underline;">Login</a></p>',
             unsafe_allow_html=True,
@@ -56,6 +57,7 @@ if submitted:
             api_service.register(email, password, full_name, role)
             result = api_service.login(email, password)
             set_auth(result["access_token"], result["user"])
-            st.switch_page("pages/dashboard.py")
+            redirect_to = st.session_state.pop("post_login_redirect", "pages/dashboard.py")
+            st.switch_page(redirect_to)
         except APIError as e:
             st.error(e.message)
