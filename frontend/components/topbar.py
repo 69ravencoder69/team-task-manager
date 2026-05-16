@@ -4,107 +4,102 @@ from utils.theme import get_theme, set_theme
 
 
 def render_topbar(show_refresh: bool = True):
+    """Render a full-width navigation bar using HTML/CSS + a minimal Streamlit button row for theme toggles."""
+
+    # ── Hide Streamlit sidebar & collapse button ───────────────────────────────
     st.markdown("""
     <style>
-    /* ── Theme toggle & nav buttons inside topbar ──────────────────────────── */
-    [data-testid="stMainBlockContainer"] > div:first-child [data-testid="stButton"] button {
-        background: transparent !important;
-        border: 1px solid var(--border-color, #333) !important;
-        box-shadow: none !important;
-        color: var(--text-color) !important;
-        padding: 0.25rem 0.75rem !important;
-        min-height: 0 !important;
-        font-size: 0.8rem !important;
-        border-radius: 6px !important;
-        transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease !important;
-    }
-    [data-testid="stMainBlockContainer"] > div:first-child [data-testid="stButton"] button:hover {
-        background: var(--card-hover-bg, #222) !important;
-        color: #fff !important;
-    }
-    [data-testid="stMainBlockContainer"] > div:first-child [data-testid="stButton"] button p {
-        font-size: 0.8rem !important;
-        margin: 0 !important;
-    }
-    /* Right-align columns */
-    [data-testid="stMainBlockContainer"] > div:first-child [data-testid="column"] {
+    [data-testid="collapsedControl"] { display: none !important; }
+    [data-testid="stSidebar"]        { display: none !important; }
+
+    /* ── Full-width HTML navbar ─────────────────────────────────────────────── */
+    .ttm-navbar {
         display: flex;
-        justify-content: flex-end;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.6rem 1.5rem;
+        border-bottom: 1px solid #2a2a2a;
+        background: transparent;
+        gap: 1rem;
+    }
+    .ttm-brand {
+        font-weight: 800;
+        font-size: 1.05rem;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        white-space: nowrap;
+        color: inherit;
+    }
+    .ttm-nav-links {
+        display: flex;
+        gap: 0.25rem;
+        align-items: center;
+        flex: 1;
+        justify-content: center;
+    }
+    .ttm-nav-links a {
+        color: #888;
+        text-decoration: none;
+        font-size: 0.85rem;
+        padding: 0.3rem 0.75rem;
+        border-radius: 6px;
+        transition: color 0.2s ease, background 0.2s ease;
+        white-space: nowrap;
+    }
+    .ttm-nav-links a:hover {
+        color: #fff;
+        background: rgba(255,255,255,0.08);
     }
 
-    /* ── Shared nav-link style (used on login / register) ──────────────────── */
-    .topbar-nav-link button {
+    /* ── Theme toggle buttons (Streamlit) ───────────────────────────────────── */
+    .ttm-theme-row [data-testid="stButton"] button {
         background: transparent !important;
-        border: none !important;
+        border: 1px solid #444 !important;
         box-shadow: none !important;
-        color: #888 !important;
-        font-size: 0.85rem !important;
-        padding: 0.3rem 0.6rem !important;
+        color: #aaa !important;
+        padding: 0.2rem 0.65rem !important;
         min-height: 0 !important;
+        font-size: 0.78rem !important;
         border-radius: 6px !important;
-        transition: color 0.2s ease, background 0.2s ease !important;
+        white-space: nowrap !important;
+        transition: background 0.2s ease, color 0.2s ease !important;
     }
-    .topbar-nav-link button:hover {
+    .ttm-theme-row [data-testid="stButton"] button:hover {
+        background: #222 !important;
         color: #fff !important;
-        background: rgba(255,255,255,0.07) !important;
     }
-    .topbar-nav-link button p { margin: 0 !important; font-size: 0.85rem !important; }
+    .ttm-theme-row [data-testid="stButton"] button p {
+        margin: 0 !important;
+        font-size: 0.78rem !important;
+    }
+    /* Remove any extra top padding from the block container */
+    [data-testid="stMainBlockContainer"] { padding-top: 0.5rem !important; }
     </style>
     """, unsafe_allow_html=True)
 
-    # ── Row: brand | nav links | theme toggles ─────────────────────────────────
-    c_brand, cn1, cn2, cn3, cn4, cn5, c_dark, c_light = st.columns(
-        [2.5, 0.9, 0.9, 1.1, 0.9, 1.1, 1.2, 1.2]
-    )
+    # ── HTML nav bar (brand + links) ────────────────────────────────────────────
+    st.markdown("""
+    <div class="ttm-navbar">
+        <div class="ttm-brand">TEAM TASK MANAGER</div>
+        <nav class="ttm-nav-links">
+            <a href="/" target="_self">Home</a>
+            <a href="/?nav=features" target="_self">Features</a>
+            <a href="/login" target="_self" onclick="sessionStorage.setItem('redirect','dashboard')">Dashboard</a>
+            <a href="/login" target="_self" onclick="sessionStorage.setItem('redirect','projects')">Projects</a>
+            <a href="/login" target="_self" onclick="sessionStorage.setItem('redirect','analytics')">Analytics</a>
+        </nav>
+    </div>
+    """, unsafe_allow_html=True)
 
-    with c_brand:
-        st.markdown(
-            '<div style="font-weight:800; font-size:1.1rem; letter-spacing:0.02em; '
-            'padding-top:0.4rem; text-transform:uppercase;">TEAM TASK MANAGER</div>',
-            unsafe_allow_html=True,
-        )
-
-    with cn1:
-        st.markdown('<div class="topbar-nav-link">', unsafe_allow_html=True)
-        if st.button("Home", key="tb_home", use_container_width=True):
-            st.switch_page("app.py")
-        st.markdown('</div>', unsafe_allow_html=True)
-
-    with cn2:
-        st.markdown('<div class="topbar-nav-link">', unsafe_allow_html=True)
-        if st.button("Features", key="tb_features", use_container_width=True):
-            # Go to landing page and scroll to features
-            st.session_state["scroll_to_features"] = True
-            st.switch_page("app.py")
-        st.markdown('</div>', unsafe_allow_html=True)
-
-    with cn3:
-        st.markdown('<div class="topbar-nav-link">', unsafe_allow_html=True)
-        if st.button("Dashboard", key="tb_dashboard", use_container_width=True):
-            st.session_state["post_login_redirect"] = "pages/dashboard.py"
-            st.switch_page("pages/login.py")
-        st.markdown('</div>', unsafe_allow_html=True)
-
-    with cn4:
-        st.markdown('<div class="topbar-nav-link">', unsafe_allow_html=True)
-        if st.button("Projects", key="tb_projects", use_container_width=True):
-            st.session_state["post_login_redirect"] = "pages/projects.py"
-            st.switch_page("pages/login.py")
-        st.markdown('</div>', unsafe_allow_html=True)
-
-    with cn5:
-        st.markdown('<div class="topbar-nav-link">', unsafe_allow_html=True)
-        if st.button("Analytics", key="tb_analytics", use_container_width=True):
-            st.session_state["post_login_redirect"] = "pages/analytics.py"
-            st.switch_page("pages/login.py")
-        st.markdown('</div>', unsafe_allow_html=True)
-
+    # ── Theme toggle buttons (need Streamlit for state management) ──────────────
+    st.markdown('<div class="ttm-theme-row">', unsafe_allow_html=True)
+    _, c_dark, c_light = st.columns([10, 1, 1])
     with c_dark:
         if st.button("🌙 Dark", key="top_dark", use_container_width=True):
             set_theme("dark")
             st.rerun()
-
     with c_light:
         if st.button("☀️ Light", key="top_light", use_container_width=True):
             set_theme("light")
             st.rerun()
+    st.markdown('</div>', unsafe_allow_html=True)

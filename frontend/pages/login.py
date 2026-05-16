@@ -11,30 +11,47 @@ from services.api_service import APIError
 from utils.session_manager import init_session, is_logged_in, set_auth
 from utils.theme import apply_theme, set_theme
 
-st.set_page_config(page_title="Login | Team Task Manager", page_icon="⚡", layout="centered")
+st.set_page_config(
+    page_title="Login | Team Task Manager",
+    page_icon="⚡",
+    layout="wide",
+    initial_sidebar_state="collapsed",
+)
 init_session()
 apply_theme()
 
 if is_logged_in():
-    # Honour any pending redirect (e.g. from nav bar)
     redirect_to = st.session_state.pop("post_login_redirect", "pages/dashboard.py")
     st.switch_page(redirect_to)
 
 render_topbar(show_refresh=False)
 
-st.markdown('<h1 style="text-align:center; font-weight:800; font-size:2rem; margin-bottom:0.5rem; text-transform:uppercase;">TEAM TASK MANAGER</h1>', unsafe_allow_html=True)
-st.markdown('<p style="text-align:center; font-size:1.2rem; margin-bottom:1rem; color:var(--text-color);">Login Page</p>', unsafe_allow_html=True)
+st.markdown("<br>", unsafe_allow_html=True)
 
-c1, c2, c3 = st.columns([1, 1.2, 1])
-with c2:
+st.markdown(
+    '<h1 style="text-align:center; font-weight:800; font-size:2rem; '
+    'margin-bottom:0.25rem; text-transform:uppercase;">TEAM TASK MANAGER</h1>',
+    unsafe_allow_html=True,
+)
+st.markdown(
+    '<p style="text-align:center; font-size:1.1rem; margin-bottom:1.5rem; color:#888;">Login Page</p>',
+    unsafe_allow_html=True,
+)
+
+# ── Centered form using columns ────────────────────────────────────────────────
+_, col, _ = st.columns([2.5, 2, 2.5])
+with col:
     with st.form("login_form"):
         st.markdown("**Enter Email**")
-        email = st.text_input("email", label_visibility="collapsed")
+        email = st.text_input("email", label_visibility="collapsed", placeholder="you@example.com")
         st.markdown("**Enter Password**")
-        password = st.text_input("password", type="password", label_visibility="collapsed")
+        password = st.text_input("password", type="password", label_visibility="collapsed", placeholder="••••••••")
 
         st.markdown(
-            '<p style="text-align:center; font-size: 0.9rem; margin: 1rem 0;">New User? <a href="register" target="_self" style="color: inherit; text-decoration: underline;">Register</a> | <a href="#" style="color: inherit; text-decoration: underline;">Login as Admin</a></p>',
+            '<p style="text-align:center; font-size:0.85rem; margin:0.75rem 0;">'
+            'New User? <a href="register" target="_self" style="color:inherit; text-decoration:underline;">Register</a>'
+            ' &nbsp;|&nbsp; '
+            '<a href="#" style="color:inherit; text-decoration:underline;">Login as Admin</a></p>',
             unsafe_allow_html=True,
         )
         submitted = st.form_submit_button("Login", use_container_width=True)
@@ -46,10 +63,12 @@ if submitted:
         try:
             result = api_service.login(email, password)
             set_auth(result["access_token"], result["user"])
-            # Redirect to the page that was originally requested, or dashboard
             redirect_to = st.session_state.pop("post_login_redirect", "pages/dashboard.py")
             st.switch_page(redirect_to)
         except APIError as e:
             st.error(e.message)
 
-st.caption("Demo: admin@demo.com / Admin123!")
+st.markdown("<br>", unsafe_allow_html=True)
+_, cap_col, _ = st.columns([2.5, 2, 2.5])
+with cap_col:
+    st.caption("Demo: admin@demo.com / Admin123!")
