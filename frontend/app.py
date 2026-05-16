@@ -47,7 +47,21 @@ with nav_c3:
     if st.button("Login", key="top_login", use_container_width=True):
         st.switch_page("pages/login.py")
 
-st.markdown("<br><br>", unsafe_allow_html=True)
+st.markdown("<br><br><br>", unsafe_allow_html=True)
+
+# Hero Section
+st.markdown('<h1 style="font-size:3.5rem; font-weight:800; line-height:1.1; margin-bottom:1rem;">Manage Your Team<br>Tasks Efficiently</h1>', unsafe_allow_html=True)
+st.markdown('<p style="color:#888; font-size:1.1rem; line-height:1.6; margin-bottom:2rem;">Organize projects, track progress, manage tasks, and improve team productivity from one simple dashboard.</p>', unsafe_allow_html=True)
+
+bc1, bc2, bc3 = st.columns([1, 1, 6])
+with bc1:
+    if st.button("Get Started", type="primary", use_container_width=True):
+        st.switch_page("pages/register.py")
+with bc2:
+    if st.button("Login", use_container_width=True):
+        st.switch_page("pages/login.py")
+
+st.markdown("<br><br><br><br>", unsafe_allow_html=True)
 
 # Features Section
 st.markdown('<h2 style="text-align:center; margin-bottom:3rem;">Features</h2>', unsafe_allow_html=True)
