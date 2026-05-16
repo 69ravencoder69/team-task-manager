@@ -50,9 +50,9 @@ def render_topbar(show_refresh: bool = True):
     </style>
     """, unsafe_allow_html=True)
 
-    # ── Header row: Brand (left) | spacer | Dark | Light ──────────────────────
+    # ── Header row: Brand (left) | Dark | Light ───────────────────────────────
     st.markdown('<div class="ttm-topbar-row">', unsafe_allow_html=True)
-    c_brand, c_spacer, c_dark, c_light = st.columns([3, 6, 1, 1])
+    c_brand, c_dark, c_light = st.columns([5, 2, 2])
 
     with c_brand:
         st.markdown(
