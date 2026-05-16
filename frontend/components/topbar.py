@@ -9,9 +9,6 @@ def render_topbar(show_refresh: bool = True):
     /* Remove default top padding */
     [data-testid="stMainBlockContainer"] { padding-top: 0 !important; }
 
-    /* Hide sidebar & collapse button on auth pages */
-    [data-testid="collapsedControl"] { display: none !important; }
-    [data-testid="stSidebar"]        { display: none !important; }
 
     /* ── Top bar row styling ─────────────────────────────────────────────────── */
     .ttm-topbar-row [data-testid="stButton"] button {

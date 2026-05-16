@@ -24,6 +24,15 @@ if is_logged_in():
 
 render_topbar(show_refresh=False)
 
+# Hide sidebar on auth pages
+st.markdown("""
+<style>
+[data-testid="collapsedControl"] { display: none !important; }
+[data-testid="stSidebar"]        { display: none !important; }
+</style>
+""", unsafe_allow_html=True)
+
+
 # ── Vertical breathing room ────────────────────────────────────────────────────
 st.markdown("<br>", unsafe_allow_html=True)
 
