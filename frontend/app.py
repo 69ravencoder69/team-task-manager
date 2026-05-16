@@ -50,10 +50,11 @@ with nav_c3:
 st.markdown("<br><br><br>", unsafe_allow_html=True)
 
 # Hero Section
-st.markdown('<h1 style="font-size:3.5rem; font-weight:800; line-height:1.1; margin-bottom:1rem;">Manage Your Team<br>Tasks Efficiently</h1>', unsafe_allow_html=True)
-st.markdown('<p style="color:#888; font-size:1.1rem; line-height:1.6; margin-bottom:2rem;">Organize projects, track progress, manage tasks, and improve team productivity from one simple dashboard.</p>', unsafe_allow_html=True)
+st.markdown('<h1 style="font-size:3.5rem; font-weight:800; line-height:1.1; margin-bottom:1.5rem; text-align:center;">Manage Your Team<br>Tasks Efficiently</h1>', unsafe_allow_html=True)
+st.markdown('<p style="color:#888; font-size:1.2rem; line-height:1.6; margin-bottom:2.5rem; text-align:center; max-width:800px; margin-left:auto; margin-right:auto;">Organize projects, track progress, manage tasks, and improve team productivity from one simple dashboard.</p>', unsafe_allow_html=True)
 
-bc1, bc2, bc3 = st.columns([1, 1, 6])
+# Centered Buttons
+bc_spacer_l, bc1, bc2, bc_spacer_r = st.columns([3, 1.2, 1.2, 3])
 with bc1:
     if st.button("Get Started", type="primary", use_container_width=True):
         st.switch_page("pages/register.py")
